@@ -11,9 +11,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import co.haptik.test.chatstat.model.source.MessageDataManager;
+import co.haptik.test.chatstat.model.source.MessageDataManagerApi;
+import co.haptik.test.chatstat.model.source.local.MessagePersistenceImpl;
+import co.haptik.test.chatstat.model.source.remote.MessageServiceImpl;
+
+public class HomeActivity extends AppCompatActivity implements HomeContract.View {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -25,29 +37,102 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private HomeContract.Presenter mPresenter;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    @BindView(R.id.container)
+    protected ViewPager mViewPager;
+
+    @BindView(R.id.tabs)
+    protected TabLayout mTabLayout;
+
+    @BindView(R.id.toolbar)
+    protected Toolbar mToolbar;
+
+    @BindView(R.id.progressbar)
+    protected ProgressBar mProgressBar;
+
+    @BindView(R.id.error_layout)
+    protected RelativeLayout mErrorLayout;
+
+    @BindView(R.id.errorText)
+    protected TextView mErrorText;
+
+    @BindView(R.id.retry)
+    protected Button mRetry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
+        MessageDataManagerApi dataManager = new MessageDataManager(getApplicationContext(),
+                new MessageServiceImpl(),
+                new MessagePersistenceImpl(getApplicationContext()));
+        mPresenter = new HomePresenter(this, dataManager);
+    }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.loadContent(false);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mPresenter.cleanUp();
+    }
+
+    @Override
+    public void showContent() {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setupWithViewPager(mViewPager);
+    }
 
+    @Override
+    public void showProgress(boolean show) {
+        if(show) {
+            mViewPager.setVisibility(View.GONE);
+            mTabLayout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mViewPager.setVisibility(View.VISIBLE);
+            mTabLayout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
+        mErrorLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showError(String message, boolean showRetry) {
+        mViewPager.setVisibility(View.GONE);
+        mTabLayout.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mErrorLayout.setVisibility(View.VISIBLE);
+        mErrorText.setText(message);
+        mRetry.setVisibility(showRetry ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick(R.id.retry)
+    void RetryClicked() {
+        if(mPresenter != null) {
+            mPresenter.loadContent(true);
+        }
     }
 
     /**

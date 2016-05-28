@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="co.haptik.test.chatstat.MainActivity">
+    tools:context=".HomeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -37,5 +37,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <include layout="@layout/error_layout"/>
 
 </android.support.design.widget.CoordinatorLayout>
