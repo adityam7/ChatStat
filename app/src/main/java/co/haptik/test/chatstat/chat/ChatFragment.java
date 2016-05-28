@@ -4,6 +4,7 @@ package co.haptik.test.chatstat.chat;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -68,6 +68,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         ButterKnife.bind(this, view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
 
@@ -85,7 +86,8 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 
     @Override
     public void showMessages(List<Message> messages) {
-        Toast.makeText(getContext(), "Messages: "+messages.size(), Toast.LENGTH_SHORT).show();
+        ChatAdapter adapter = new ChatAdapter(messages);
+        mRecyclerView.setAdapter(adapter);
     }
 
     @Override
