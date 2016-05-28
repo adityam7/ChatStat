@@ -20,6 +20,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import co.haptik.test.chatstat.chat.ChatFragment;
 import co.haptik.test.chatstat.model.source.MessageDataManager;
 import co.haptik.test.chatstat.model.source.MessageDataManagerApi;
 import co.haptik.test.chatstat.model.source.local.MessagePersistenceImpl;
@@ -182,9 +183,11 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            if(position == 0) {
+                return ChatFragment.newInstance();
+            } else {
+                return PlaceholderFragment.newInstance(position + 1);
+            }
         }
 
         @Override
