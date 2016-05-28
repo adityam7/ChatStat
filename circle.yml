@@ -12,7 +12,8 @@ machine:
 
 dependencies:
     override:
-        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-23.0.3,android-21,extra-google-m2repository,extra-google-google_play_services,extra-android-support
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,android-21,extra-android-m2repository,extra-google-m2repository,extra-google-google_play_services,extra-android-support
+        - echo y | android update sdk --no-ui --all --filter build-tools-23.0.3
 
 test:
     override:
