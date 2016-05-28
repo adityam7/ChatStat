@@ -12,7 +12,7 @@ public interface MessageDataManagerApi {
 
     Observable<List<Message>> loadMessages(boolean forceRefresh);
 
-    void markFavorite(Message message);
+    void updateMessage(Message message);
 
     boolean isNetworkAvailable();
 

@@ -69,7 +69,7 @@ public class MessagePersistenceImpl implements MessagePersistenceApi {
     @Override
     public boolean updateMessage(Message message) {
         if(message != null) {
-            long rowId = mMessageDao.insert(message);
+            long rowId = mMessageDao.insertOrReplace(message);
             if(rowId > -1) {
                 return true;
             }

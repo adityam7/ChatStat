@@ -57,8 +57,8 @@ public class MessageDataManager implements MessageDataManagerApi {
     }
 
     @Override
-    public void markFavorite(Message message) {
-
+    public void updateMessage(Message message) {
+        mPersistence.updateMessage(message);
     }
 
     @Override

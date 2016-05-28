@@ -53,6 +53,12 @@ public class ChatPresenter implements ChatContract.Presenter {
     }
 
     @Override
+    public void messageFavouriteToggle(Message message) {
+        message.setFavourite(!message.getFavourite());
+        mDataManager.updateMessage(message);
+    }
+
+    @Override
     public void cleanUp() {
         if(mMessagesSubscription != null && !mMessagesSubscription.isUnsubscribed()) {
             mMessagesSubscription.unsubscribe();

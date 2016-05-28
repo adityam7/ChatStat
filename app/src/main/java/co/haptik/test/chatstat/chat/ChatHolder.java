@@ -40,7 +40,7 @@ public class ChatHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind(Message message) {
+    public void bind(final Message message, final ChatInteractionListener listener) {
         mUserName.setText(message.getUsername());
         mName.setText(message.getName());
         mBody.setText(message.getBody());
@@ -55,6 +55,19 @@ public class ChatHolder extends RecyclerView.ViewHolder {
                 .placeholder(R.drawable.ic_face)
                 .crossFade()
                 .into(mProfilePic);
+
+        mFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!message.getFavourite()) {
+                    mFavorite.setImageResource(R.drawable.ic_favorite);
+                } else {
+                    mFavorite.setImageResource(R.drawable.ic_favorite_border);
+                }
+                listener.messageFavourited(message);
+
+            }
+        });
 
     }
 

@@ -17,6 +17,7 @@ public interface ChatContract {
 
     interface Presenter {
         void loadMessages(boolean forceRefresh);
+        void messageFavouriteToggle(Message message);
         void cleanUp();
     }
 }

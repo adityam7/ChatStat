@@ -25,7 +25,7 @@ import co.haptik.test.chatstat.model.source.MessageDataManagerApi;
 import co.haptik.test.chatstat.model.source.local.MessagePersistenceImpl;
 import co.haptik.test.chatstat.model.source.remote.MessageServiceImpl;
 
-public class ChatFragment extends Fragment implements ChatContract.View {
+public class ChatFragment extends Fragment implements ChatContract.View, ChatInteractionListener {
 
     @BindView(R.id.recyclerview)
     protected RecyclerView mRecyclerView;
@@ -86,7 +86,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 
     @Override
     public void showMessages(List<Message> messages) {
-        ChatAdapter adapter = new ChatAdapter(messages);
+        ChatAdapter adapter = new ChatAdapter(messages, this);
         mRecyclerView.setAdapter(adapter);
     }
 
@@ -114,5 +114,10 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         mErrorLayout.setVisibility(View.VISIBLE);
         mErrorText.setText(message);
         mRetry.setVisibility(showRetry ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void messageFavourited(Message message) {
+        mPresenter.messageFavouriteToggle(message);
     }
 }

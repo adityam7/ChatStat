@@ -16,9 +16,11 @@ import co.haptik.test.chatstat.model.Message;
 public class ChatAdapter extends RecyclerView.Adapter<ChatHolder> {
 
     private List<Message> mMessages;
+    private ChatInteractionListener mInteractionListener;
 
-    public ChatAdapter(List<Message> messages) {
+    public ChatAdapter(List<Message> messages, ChatInteractionListener listener) {
         mMessages = messages;
+        mInteractionListener = listener;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatHolder> {
 
     @Override
     public void onBindViewHolder(ChatHolder holder, int position) {
-        holder.bind(mMessages.get(position));
+        holder.bind(mMessages.get(position), mInteractionListener);
     }
 
     @Override
