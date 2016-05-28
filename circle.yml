@@ -16,9 +16,6 @@ dependencies:
         - echo y | android update sdk --no-ui --all --filter build-tools-23.0.3
 
 test:
-    override:
-        - (./gradlew test):
-            timeout: 1000
-  post:
+    - ./gradlew test
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/build/test-results/debug/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
