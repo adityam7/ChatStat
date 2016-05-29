@@ -13,6 +13,7 @@ public interface ChatContract {
         void showProgress(boolean show);
         void showMessage(String message);
         void showError(String message, boolean showRetry);
+        void broadcastMessageFavourited();
     }
 
     interface Presenter {

@@ -1,4 +1,3 @@
 <resources>
     <string name="app_name">ChatStat</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

@@ -56,6 +56,7 @@ public class ChatPresenter implements ChatContract.Presenter {
     public void messageFavouriteToggle(Message message) {
         message.setFavourite(!message.getFavourite());
         mDataManager.updateMessage(message);
+        mView.broadcastMessageFavourited();
     }
 
     @Override

@@ -1,7 +1,10 @@
-package co.haptik.test.chatstat.chat;
+package co.haptik.test.chatstat.stat;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -21,15 +24,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.haptik.test.chatstat.R;
-import co.haptik.test.chatstat.model.Message;
+import co.haptik.test.chatstat.chat.ChatFragment;
+import co.haptik.test.chatstat.model.Stat;
 import co.haptik.test.chatstat.model.source.MessageDataManager;
 import co.haptik.test.chatstat.model.source.MessageDataManagerApi;
 import co.haptik.test.chatstat.model.source.local.MessagePersistenceImpl;
 import co.haptik.test.chatstat.model.source.remote.MessageServiceImpl;
 
-public class ChatFragment extends Fragment implements ChatContract.View, ChatInteractionListener {
-
-    public static final String MESSAGE_CHANGED = "co.haptik.chat.message.favourite";
+public class StatFragment extends Fragment implements StatContract.View {
 
     @BindView(R.id.recyclerview)
     protected RecyclerView mRecyclerView;
@@ -46,14 +48,14 @@ public class ChatFragment extends Fragment implements ChatContract.View, ChatInt
     @BindView(R.id.retry)
     protected Button mRetry;
 
-    private ChatContract.Presenter mPresenter;
+    private StatContract.Presenter mPresenter;
 
-    public ChatFragment() {
+    public StatFragment() {
         // Required empty public constructor
     }
 
-    public static ChatFragment newInstance() {
-        ChatFragment fragment = new ChatFragment();
+    public static StatFragment newInstance() {
+        StatFragment fragment = new StatFragment();
         return fragment;
     }
 
@@ -63,7 +65,7 @@ public class ChatFragment extends Fragment implements ChatContract.View, ChatInt
         MessageDataManagerApi dataManager = new MessageDataManager(getContext(),
                 new MessageServiceImpl(),
                 new MessagePersistenceImpl(getContext()));
-        mPresenter = new ChatPresenter(this, dataManager);
+        mPresenter = new StatPresenter(this, dataManager);
     }
 
     @Override
@@ -79,18 +81,21 @@ public class ChatFragment extends Fragment implements ChatContract.View, ChatInt
     @Override
     public void onStart() {
         super.onStart();
-        mPresenter.loadMessages(false);
+        IntentFilter intentFilter = new IntentFilter(ChatFragment.MESSAGE_CHANGED);
+        getActivity().registerReceiver(mReceiver, intentFilter);
+        mPresenter.loadStats(false);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        getActivity().unregisterReceiver(mReceiver);
         mPresenter.cleanUp();
     }
 
     @Override
-    public void showMessages(List<Message> messages) {
-        ChatAdapter adapter = new ChatAdapter(messages, this);
+    public void showStats(List<Stat> stats) {
+        StatAdapter adapter = new StatAdapter(stats);
         mRecyclerView.setAdapter(adapter);
     }
 
@@ -122,18 +127,13 @@ public class ChatFragment extends Fragment implements ChatContract.View, ChatInt
 
     @OnClick(R.id.retry)
     void retryClicked() {
-        mPresenter.loadMessages(true);
+        mPresenter.loadStats(true);
     }
 
-    @Override
-    public void broadcastMessageFavourited() {
-        Intent intent = new Intent();
-        intent.setAction(MESSAGE_CHANGED);
-        getActivity().sendBroadcast(intent);
-    }
-
-    @Override
-    public void messageFavourited(Message message) {
-        mPresenter.messageFavouriteToggle(message);
-    }
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mPresenter.loadStats(false);
+        }
+    };
 }
