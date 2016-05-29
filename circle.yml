@@ -17,7 +17,7 @@ dependencies:
 
 test:
   override:
-    - ./gradlew test
+    - ./gradlew testMockDebugUnitTest
     - mkdir -p $CIRCLE_TEST_REPORTS/reports/
     - cp -avr app/build/reports/tests/debug/ $CIRCLE_TEST_REPORTS/reports/
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/

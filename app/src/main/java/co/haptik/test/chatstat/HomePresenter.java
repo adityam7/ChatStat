@@ -4,10 +4,9 @@ import java.util.List;
 
 import co.haptik.test.chatstat.model.Message;
 import co.haptik.test.chatstat.model.source.MessageDataManagerApi;
+import co.haptik.test.chatstat.util.ObservableScheduler;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Aditya Mehta on 28/05/16.
@@ -30,9 +29,7 @@ public class HomePresenter implements HomeContract.Presenter {
         if(!mDataManager.isNetworkAvailable()) {
             mView.showMessage("Network not connected");
         }
-        mMessagesSubscription = mDataManager.loadMessages(forceRefresh)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mMessagesSubscription = ObservableScheduler.schedule(mDataManager.loadMessages(forceRefresh))
                 .subscribe(new Subscriber<List<Message>>() {
                     @Override
                     public void onCompleted() {
