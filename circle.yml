@@ -21,5 +21,5 @@ test:
     - mkdir -p $CIRCLE_TEST_REPORTS/reports/
     - cp -avr app/build/reports/tests/mockDebug/ $CIRCLE_TEST_REPORTS/reports/
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-    - find . -type f -regex ".*/build/test-results/debug/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - find . -type f -regex ".*/build/test-results/mockDebug/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 
